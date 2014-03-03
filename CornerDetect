@@ -27,4 +27,43 @@ int main()
   int nSize = 3;  //Window size for finding local maxima
   int nCornerCount =0;
   
+  for(y = nSize ; y <corners ->height - nSize ; y++)
+    for(x = nSize ; x <corners ->width - nSize ; x++)
+    {
+      bChange = false;
+      maxValue = cvGetReal2D(corners, y, x);
+      
+      for(n = y-nSize ; n <=y+nSize ; n++)
+        for(m = x -nSize ; m <=x +nSize ; m++)
+        {
+          if(m==x && n==y)
+            continue;
+          fValue = cvGetReal2D(corners, n, m);
+          if(fValue >= maxValue)
+          {
+            bChange = true;
+            break;
+          }
+        }
+    
+    if(!bChange)
+    {
+      nCornerCount++;
+      printf("corners(%d %d) = %f\n", x, y, maxValue );
+      cvCircle(dstImage, cvPoint(x, y), 5, CV_RGB(255, 0, 0), 2);
+    }
+  }
   
+  printf("nCornerCount = %d\n", nCornerCount);
+  
+  cvNamedWindow("dstImage", CV_WINDOW_AUTOSIZE);
+  cvShowImage("dstImage", dstImage);
+  
+  cvWaitkey(0);
+  cvDestroyAllWindows();
+  cvReleaseImage(&corners);
+  cvReleaseImage(&srcImage);
+  cvReleaseImage(&dstImage);
+  
+  return 0;
+}
