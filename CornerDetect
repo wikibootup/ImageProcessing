@@ -1,0 +1,30 @@
+//void cvPreCornerDetect(const CvArr *image, CvArr *corners, int aperture_size =3);
+//
+#include "cv.h"
+#include "highgui.h"
+int main()
+{
+  IplImage  *srcImage;
+  if( (srcImage = cvLoadImage("cornerTest.jpg",
+      CV_LOAD_IMAGE_GRAYSCALE)) == NULL)
+      return -1;
+  
+  IplImage  *dstimage = cvCreateImage( cvGetSize(srcImage), IPL_DEPTH_8U, 3);
+  IplImage  *corners = cvCreateImage( cvGetSize(srcImage), IPL_DEPTH_32F, 1);
+  
+  cvPreCornerDetect(srcImage, corners, 3);
+  //  cvPow(corners, corners, 2.0);
+  cvAbs(corners, corners);
+  cvThreshold(corners, corners, 0.01, 0, CV_THRESH_TOZERO);
+  cvCvtColor(srcImage, dstImage, CV_GRAY2BGR);
+  
+  //Find local maxima
+  double  fValue;
+  double  maxValue;
+  int x, y;
+  int m, n;
+  bool bChange;
+  int nSize = 3;  //Window size for finding local maxima
+  int nCornerCount =0;
+  
+  
